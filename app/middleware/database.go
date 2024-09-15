@@ -8,11 +8,16 @@ import (
 )
 
 func ConnectDB() (*sql.DB, error) {
-	db, err := sql.Open("pgx", "postgres://begyy:@localhost:5432/golang")
+	db, err := sql.Open("pgx", "postgres://postgres:7006050s@localhost:5432/golang")
 	if err != nil {
 		log.Fatal("Database connection failed:", err)
 		return nil, err
 	}
+	if err := db.Ping(); err != nil {
+		log.Fatal("Database ping failed:", err)
+		return nil, err
+	}
+
 	log.Println("Connected to database")
 	return db, nil
 }

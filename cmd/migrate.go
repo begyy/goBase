@@ -15,7 +15,7 @@ func main() {
 
 	m, err := migrate.New(
 		"file://./migrations",
-		"postgres://begyy:@localhost:5432/golang?sslmode=disable",
+		"postgres://postgres:7006050s@localhost:5432/golang?sslmode=disable",
 	)
 	if err != nil {
 		log.Fatal(err)

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"goBase/app/schema"
 	"log"
 )
 
@@ -10,7 +11,7 @@ type UserRepository struct {
 }
 
 func NewUserRepository(db *sql.DB) *UserRepository {
-	return &UserRepository{}
+	return &UserRepository{DB: db}
 }
 
 func (r *UserRepository) CreateUser(
@@ -28,4 +29,44 @@ func (r *UserRepository) CreateUser(
 		return -1, err
 	}
 	return userID, nil
+}
+
+func (r *UserRepository) CheckUsername(UserName string) (bool, error) {
+	query := `
+		SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)
+	`
+
+	var exists bool
+	err := r.DB.QueryRow(query, UserName).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
+func (r *UserRepository) GetUserByName(UserName string) (schema.UserMeSchema, error) {
+	query := `
+		SELECT id, username, email, firstname, lastname, is_superuser
+		FROM users
+		WHERE username = $1
+	`
+
+	var user schema.UserMeSchema
+	err := r.DB.QueryRow(query, UserName).Scan(
+		&user.ID,
+		&user.Username,
+		&user.Email,
+		&user.FirstName,
+		&user.LastName,
+		&user.IsSuperuser,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return user, nil
+		}
+		return user, err
+	}
+
+	return user, nil
 }
