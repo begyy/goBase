@@ -21,3 +21,8 @@ type UserMeSchema struct {
 	Email       string `json:"email"`
 	IsSuperuser bool   `json:"is_superuser"`
 }
+
+type UserSchema struct {
+	UserMeSchema
+	Password string `json:"password"`
+}

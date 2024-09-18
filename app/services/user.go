@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"goBase/app/repositories"
 	"goBase/app/schema"
 	"golang.org/x/crypto/bcrypt"
@@ -17,15 +16,19 @@ func NewUserService(userRepository *repositories.UserRepository) *UserService {
 }
 
 func (s *UserService) PasswordToHashPassword(password string) (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	passwordWithSecret := password
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(passwordWithSecret), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
 	return string(hashedPassword), nil
 }
 
-func CheckPasswordHash(password, hashedPassword string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+func (s *UserService) CheckPasswordHash(password, hashedPassword string) bool {
+	passwordWithSecret := password
+
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(passwordWithSecret))
 	return err == nil
 }
 
@@ -57,18 +60,22 @@ func (s *UserService) SignUp(sch *schema.SignUpSchemaIn) (string, error) {
 	return "User signed up successfully", nil
 }
 
-func (s *UserService) SignIn(sch *schema.SignInSchemaIn) (schema.UserMeSchema, error) {
-	getUser, err := s.Repo.GetUserByName(sch.Username)
+func (s *UserService) SignIn(sch *schema.SignInSchemaIn) (*schema.UserMeSchema, error) {
+	user, err := s.Repo.GetUserByName(sch.Username)
 	if err != nil {
-		return getUser, err
+		return nil, errors.New("username or password is incorrect")
 	}
-	passwordToHash, err := s.PasswordToHashPassword(sch.Password)
-	if err != nil {
-		return getUser, err
-	}
-	if CheckPasswordHash(sch.Password, passwordToHash) {
-		return getUser, nil
-	}
-	return getUser, errors.New(fmt.Sprintf("username or password is incorrect"))
+	if !s.CheckPasswordHash(sch.Password, user.Password) {
 
+		return nil, errors.New("username or password is incorrect")
+	}
+	userMe := &schema.UserMeSchema{
+		ID:          user.ID,
+		Username:    user.Username,
+		Email:       user.Email,
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		IsSuperuser: user.IsSuperuser,
+	}
+	return userMe, nil
 }

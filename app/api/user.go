@@ -44,7 +44,7 @@ func SignIn(c echo.Context) error {
 	userService := services.NewUserService(userRepo)
 	userMe, err := userService.SignIn(userDTO)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"message": err})
+		return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
 	}
 	return c.JSON(http.StatusOK, userMe)
 }

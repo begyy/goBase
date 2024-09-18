@@ -44,14 +44,14 @@ func (r *UserRepository) CheckUsername(UserName string) (bool, error) {
 	return exists, nil
 }
 
-func (r *UserRepository) GetUserByName(UserName string) (schema.UserMeSchema, error) {
+func (r *UserRepository) GetUserByName(UserName string) (schema.UserSchema, error) {
 	query := `
-		SELECT id, username, email, firstname, lastname, is_superuser
+		SELECT id, username, email, firstname, lastname, is_superuser, password
 		FROM users
 		WHERE username = $1
 	`
 
-	var user schema.UserMeSchema
+	var user schema.UserSchema
 	err := r.DB.QueryRow(query, UserName).Scan(
 		&user.ID,
 		&user.Username,
@@ -59,6 +59,7 @@ func (r *UserRepository) GetUserByName(UserName string) (schema.UserMeSchema, er
 		&user.FirstName,
 		&user.LastName,
 		&user.IsSuperuser,
+		&user.Password,
 	)
 
 	if err != nil {
