@@ -38,7 +38,7 @@ func (s *UserService) SignUp(sch *schema.SignUpSchemaIn) (string, error) {
 		return "", err
 	}
 	if checkUser {
-		return "Username already exists", errors.New("username already exists")
+		return "", errors.New("username already exists")
 	}
 
 	password, err := s.PasswordToHashPassword(sch.Password)
@@ -54,7 +54,7 @@ func (s *UserService) SignUp(sch *schema.SignUpSchemaIn) (string, error) {
 		password,
 		false)
 	if err != nil {
-		return "Can't create user", err
+		return "", err
 	}
 
 	return "User signed up successfully", nil

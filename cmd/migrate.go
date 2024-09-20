@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -22,9 +23,11 @@ func main() {
 	}
 
 	if *direction == "up" {
+		fmt.Println("Upgrade")
 		err = m.Up()
 	} else {
 		err = m.Down()
+		fmt.Println("Down")
 	}
 
 	if err != nil && err != migrate.ErrNoChange {

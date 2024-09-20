@@ -25,7 +25,7 @@ func SignUp(c echo.Context) error {
 	message, err := userService.SignUp(userDTO)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"message": message})
+		return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{"message": message})
