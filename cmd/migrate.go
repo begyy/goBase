@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -16,7 +17,7 @@ func main() {
 
 	m, err := migrate.New(
 		"file://./migrations",
-		"postgres://postgres:7006050s@localhost:5432/golang?sslmode=disable",
+		os.Getenv("DATABASE_URL"),
 	)
 	if err != nil {
 		log.Fatal(err)
