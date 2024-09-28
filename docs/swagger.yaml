@@ -1,0 +1,123 @@
+basePath: /api/v1/
+definitions:
+  schema.SignUpSchemaIn:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      username:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    - username
+    type: object
+  schema.UserMeSchema:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      is_superuser:
+        type: boolean
+      last_name:
+        type: string
+      username:
+        type: string
+    type: object
+  utils.LogicError:
+    properties:
+      message:
+        type: string
+    type: object
+  utils.ValidationError:
+    properties:
+      error:
+        type: string
+      field_name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: GoBase
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: goBase API
+  version: "1.0"
+paths:
+  /user/me/:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            Authorization:
+              description: token
+              type: string
+          schema:
+            $ref: '#/definitions/schema.UserMeSchema'
+        "400":
+          description: Bad Request
+          headers:
+            Authorization:
+              description: token
+              type: string
+          schema:
+            $ref: '#/definitions/utils.LogicError'
+      summary: Me
+      tags:
+      - users
+  /user/sign-up/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User SignUp data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.SignUpSchemaIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.SignUpSchemaIn'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.LogicError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            items:
+              $ref: '#/definitions/utils.ValidationError'
+            type: array
+      summary: Login User
+      tags:
+      - users
+swagger: "2.0"

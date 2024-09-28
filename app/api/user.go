@@ -10,6 +10,16 @@ import (
 	"net/http"
 )
 
+// SignUp
+// @Summary      Create User
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param request body schema.SignUpSchemaIn true "User SignUp data"
+// @Success      200  {object}  schema.SignUpSchemaIn
+// @Failure      400  {object}   utils.LogicError
+// @Failure      422  {array}   utils.ValidationError
+// @Router       /user/sign-up/ [post]
 func SignUp(c echo.Context) error {
 	db := c.Get("db").(*sql.DB)
 	userDTO := new(schema.SignUpSchemaIn)
@@ -31,6 +41,16 @@ func SignUp(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"message": message})
 }
 
+// SignIn
+// @Summary      Login User
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param request body schema.SignUpSchemaIn true "User SignUp data"
+// @Success      200  {object}  schema.SignUpSchemaIn
+// @Failure      400  {object}   utils.LogicError
+// @Failure      422  {array}   utils.ValidationError
+// @Router       /user/sign-up/ [post]
 func SignIn(c echo.Context) error {
 	db := c.Get("db").(*sql.DB)
 	userDTO := new(schema.SignInSchemaIn)
@@ -55,6 +75,15 @@ func SignIn(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"token": token})
 }
 
+// UserMe
+// @Summary      Me
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  schema.UserMeSchema
+// @Failure      400  {object}   utils.LogicError
+// @Header       200, 400, default  {string}  Authorization "token"
+// @Router       /user/me/ [get]
 func UserMe(c echo.Context) error {
 	db := c.Get("db").(*sql.DB)
 	userID := c.Get("userID").(int)

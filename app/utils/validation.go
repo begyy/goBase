@@ -12,6 +12,10 @@ type ValidationError struct {
 	Error string `json:"error"`
 }
 
+type LogicError struct {
+	Message string `json:"message"`
+}
+
 func FormatValidationErrors(err error, dto interface{}) []ValidationError {
 	var errors []ValidationError
 

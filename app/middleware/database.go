@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/labstack/echo/v4"
+	"goBase/app/config"
 	"log"
-	"os"
 )
 
 func ConnectDB() (*sql.DB, error) {
-	db, err := sql.Open("pgx", os.Getenv("DATABASE_URL"))
+	db, err := sql.Open("pgx", config.AppConfig.DatabaseURL)
 	if err != nil {
 		// log.Fatal("Database connection failed:", err)
 		return nil, err
