@@ -14,7 +14,7 @@ type SignInSchemaIn struct {
 }
 
 type UserMeSchema struct {
-	ID          uint   `json:"id"`
+	ID          int    `json:"id"`
 	Username    string `json:"username"`
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`

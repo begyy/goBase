@@ -60,7 +60,7 @@ func (s *UserService) SignUp(sch *schema.SignUpSchemaIn) (string, error) {
 	return "User signed up successfully", nil
 }
 
-func (s *UserService) SignIn(sch *schema.SignInSchemaIn) (*schema.UserMeSchema, error) {
+func (s *UserService) SignIn(sch *schema.SignInSchemaIn) (*int, error) {
 	user, err := s.Repo.GetUserByName(sch.Username)
 	if err != nil {
 		return nil, errors.New("username or password is incorrect")
@@ -69,13 +69,14 @@ func (s *UserService) SignIn(sch *schema.SignInSchemaIn) (*schema.UserMeSchema, 
 
 		return nil, errors.New("username or password is incorrect")
 	}
-	userMe := &schema.UserMeSchema{
-		ID:          user.ID,
-		Username:    user.Username,
-		Email:       user.Email,
-		FirstName:   user.FirstName,
-		LastName:    user.LastName,
-		IsSuperuser: user.IsSuperuser,
+	return &user.ID, nil
+
+}
+
+func (s *UserService) UserMe(userID int) (*schema.UserMeSchema, error) {
+	user, err := s.Repo.GetUserByID(userID)
+	if err != nil {
+		return nil, err
 	}
-	return userMe, nil
+	return &user, nil
 }

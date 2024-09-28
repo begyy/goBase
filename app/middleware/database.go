@@ -11,11 +11,11 @@ import (
 func ConnectDB() (*sql.DB, error) {
 	db, err := sql.Open("pgx", os.Getenv("DATABASE_URL"))
 	if err != nil {
-		log.Fatal("Database connection failed:", err)
+		// log.Fatal("Database connection failed:", err)
 		return nil, err
 	}
 	if err := db.Ping(); err != nil {
-		log.Fatal("Database ping failed:", err)
+		// log.Fatal("Database ping failed:", err)
 		return nil, err
 	}
 

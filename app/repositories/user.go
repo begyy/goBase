@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"goBase/app/schema"
 	"log"
 )
@@ -63,11 +64,32 @@ func (r *UserRepository) GetUserByName(UserName string) (schema.UserSchema, erro
 	)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return user, nil
 		}
 		return user, err
 	}
 
+	return user, nil
+}
+
+func (r *UserRepository) GetUserByID(UserID int) (schema.UserMeSchema, error) {
+	query := `SELECT id, username, email, firstname, lastname, is_superuser FROM users WHERE id = $1`
+	var user schema.UserMeSchema
+	err := r.DB.QueryRow(query, UserID).Scan(
+		&user.ID,
+		&user.Username,
+		&user.Email,
+		&user.FirstName,
+		&user.LastName,
+		&user.IsSuperuser,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return user, nil
+		}
+		return user, err
+	}
 	return user, nil
 }

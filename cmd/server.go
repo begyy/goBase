@@ -3,8 +3,8 @@ package main
 import (
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/labstack/echo/v4"
-	"goBase/app/api"
 	"goBase/app/middleware"
+	"goBase/app/router"
 	"log"
 )
 
@@ -16,7 +16,7 @@ func main() {
 	}
 	defer db.Close()
 	e.Use(middleware.DBMiddleware(db))
-	e.POST("/api/v1/sign-up/", api.SignUp)
-	e.POST("/api/v1/sign-in/", api.SignIn)
+	// Routers
+	router.ConfigureUserRoutes(e)
 	e.Logger.Fatal(e.Start(":8080"))
 }

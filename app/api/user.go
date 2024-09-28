@@ -42,9 +42,28 @@ func SignIn(c echo.Context) error {
 	}
 	userRepo := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepo)
-	userMe, err := userService.SignIn(userDTO)
+	userID, err := userService.SignIn(userDTO)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
 	}
-	return c.JSON(http.StatusOK, userMe)
+	tokenRepo := repositories.NewUserTokenRepository(db)
+	tokenService := services.NewUserTokenService(tokenRepo)
+	token, err := tokenService.GetTokenOrAddToken(*userID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
+	}
+	return c.JSON(http.StatusOK, echo.Map{"token": token})
+}
+
+func UserMe(c echo.Context) error {
+	db := c.Get("db").(*sql.DB)
+	userID := c.Get("userID").(int)
+	userRepo := repositories.NewUserRepository(db)
+	userService := services.NewUserService(userRepo)
+	user, err := userService.UserMe(userID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
+	}
+	return c.JSON(http.StatusOK, user)
+
 }
