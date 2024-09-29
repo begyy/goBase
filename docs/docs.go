@@ -64,7 +64,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/sign-up/": {
+        "/user/sign-in/": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -76,6 +76,54 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Login User",
+                "parameters": [
+                    {
+                        "description": "User Login data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.SignInSchemaIn"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.SignInSchemaOut"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.LogicError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/utils.ValidationError"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/sign-up/": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create User",
                 "parameters": [
                     {
                         "description": "User SignUp data",
@@ -91,7 +139,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/schema.SignUpSchemaIn"
+                            "$ref": "#/definitions/schema.DefaultSchema"
                         }
                     },
                     "400": {
@@ -114,6 +162,40 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "schema.DefaultSchema": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.SignInSchemaIn": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "minLength": 8
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 32,
+                    "minLength": 3
+                }
+            }
+        },
+        "schema.SignInSchemaOut": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.SignUpSchemaIn": {
             "type": "object",
             "required": [

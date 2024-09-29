@@ -1,5 +1,28 @@
 basePath: /api/v1/
 definitions:
+  schema.DefaultSchema:
+    properties:
+      message:
+        type: string
+    type: object
+  schema.SignInSchemaIn:
+    properties:
+      password:
+        minLength: 8
+        type: string
+      username:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  schema.SignInSchemaOut:
+    properties:
+      token:
+        type: string
+    type: object
   schema.SignUpSchemaIn:
     properties:
       email:
@@ -89,6 +112,37 @@ paths:
       summary: Me
       tags:
       - users
+  /user/sign-in/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Login data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schema.SignInSchemaIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.SignInSchemaOut'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.LogicError'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            items:
+              $ref: '#/definitions/utils.ValidationError'
+            type: array
+      summary: Login User
+      tags:
+      - users
   /user/sign-up/:
     post:
       consumes:
@@ -106,7 +160,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/schema.SignUpSchemaIn'
+            $ref: '#/definitions/schema.DefaultSchema'
         "400":
           description: Bad Request
           schema:
@@ -117,7 +171,7 @@ paths:
             items:
               $ref: '#/definitions/utils.ValidationError'
             type: array
-      summary: Login User
+      summary: Create User
       tags:
       - users
 swagger: "2.0"

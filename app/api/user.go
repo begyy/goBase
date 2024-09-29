@@ -16,7 +16,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param request body schema.SignUpSchemaIn true "User SignUp data"
-// @Success      200  {object}  schema.SignUpSchemaIn
+// @Success      200  {object}  schema.DefaultSchema
 // @Failure      400  {object}   utils.LogicError
 // @Failure      422  {array}   utils.ValidationError
 // @Router       /user/sign-up/ [post]
@@ -46,11 +46,11 @@ func SignUp(c echo.Context) error {
 // @Tags         users
 // @Accept       json
 // @Produce      json
-// @Param request body schema.SignUpSchemaIn true "User SignUp data"
-// @Success      200  {object}  schema.SignUpSchemaIn
+// @Param request body schema.SignInSchemaIn true "User Login data"
+// @Success      200  {object}  schema.SignInSchemaOut
 // @Failure      400  {object}   utils.LogicError
 // @Failure      422  {array}   utils.ValidationError
-// @Router       /user/sign-up/ [post]
+// @Router       /user/sign-in/ [post]
 func SignIn(c echo.Context) error {
 	db := c.Get("db").(*sql.DB)
 	userDTO := new(schema.SignInSchemaIn)
@@ -82,7 +82,7 @@ func SignIn(c echo.Context) error {
 // @Produce      json
 // @Success      200  {object}  schema.UserMeSchema
 // @Failure      400  {object}   utils.LogicError
-// @Header       200, 400, default  {string}  Authorization "token"
+// @Header       200,400,default  {string} Authorization "token"
 // @Router       /user/me/ [get]
 func UserMe(c echo.Context) error {
 	db := c.Get("db").(*sql.DB)
