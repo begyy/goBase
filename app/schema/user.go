@@ -9,8 +9,8 @@ type SignUpSchemaIn struct {
 }
 
 type SignInSchemaIn struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" validate:"required,min=3,max=32"`
+	Password string `json:"password" validate:"required,min=8"`
 }
 
 type UserMeSchema struct {

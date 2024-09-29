@@ -58,7 +58,7 @@ func SignIn(c echo.Context) error {
 		return err
 	}
 	if errors := utils.ValidateAndFormat(userDTO); errors != nil {
-		return c.JSON(http.StatusBadRequest, errors)
+		return c.JSON(http.StatusUnprocessableEntity, errors)
 	}
 	userRepo := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepo)
