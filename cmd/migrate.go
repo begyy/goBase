@@ -1,23 +1,24 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
-	"log"
-	"os"
-
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"goBase/app/config"
+	"log"
 )
 
 func main() {
+	config.Load()
 	direction := flag.String("direction", "up", "Specify migration direction: up or down")
 	flag.Parse()
 
 	m, err := migrate.New(
 		"file://./migrations",
-		os.Getenv("DATABASE_URL"),
+		config.AppConfig.DatabaseURL,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -31,7 +32,7 @@ func main() {
 		fmt.Println("Down")
 	}
 
-	if err != nil && err != migrate.ErrNoChange {
+	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		log.Fatal(err)
 	}
 

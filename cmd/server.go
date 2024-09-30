@@ -12,7 +12,7 @@ import (
 )
 
 // @title goBase API
-// @version 1.0
+// @version 0.1
 // @description GoBase
 // @termsOfService http://swagger.io/terms/
 
@@ -33,6 +33,8 @@ func main() {
 		log.Fatal("Failed to connect to the database:", err)
 	}
 	defer db.Close()
+
+	// Middlewares
 	e.Use(middleware.DBMiddleware(db))
 	// Routers
 	e.GET("/swagger/*", echoSwagger.WrapHandler) // Swagger
